@@ -1,0 +1,110 @@
+[
+  {
+    "Id": 1,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T15:00:00Z",
+    "temperature": 22,
+    "condition": "partly-cloudy",
+    "precipitationChance": 20,
+    "icon": "partly-cloudy-day"
+  },
+  {
+    "Id": 2,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T16:00:00Z",
+    "temperature": 23,
+    "condition": "partly-cloudy",
+    "precipitationChance": 15,
+    "icon": "partly-cloudy-day"
+  },
+  {
+    "Id": 3,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T17:00:00Z",
+    "temperature": 24,
+    "condition": "sunny",
+    "precipitationChance": 10,
+    "icon": "clear-day"
+  },
+  {
+    "Id": 4,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T18:00:00Z",
+    "temperature": 23,
+    "condition": "sunny",
+    "precipitationChance": 5,
+    "icon": "clear-day"
+  },
+  {
+    "Id": 5,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T19:00:00Z",
+    "temperature": 21,
+    "condition": "partly-cloudy",
+    "precipitationChance": 10,
+    "icon": "partly-cloudy-day"
+  },
+  {
+    "Id": 6,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T20:00:00Z",
+    "temperature": 20,
+    "condition": "partly-cloudy",
+    "precipitationChance": 20,
+    "icon": "partly-cloudy-night"
+  },
+  {
+    "Id": 7,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T21:00:00Z",
+    "temperature": 19,
+    "condition": "cloudy",
+    "precipitationChance": 25,
+    "icon": "cloudy"
+  },
+  {
+    "Id": 8,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T22:00:00Z",
+    "temperature": 18,
+    "condition": "cloudy",
+    "precipitationChance": 30,
+    "icon": "cloudy"
+  },
+  {
+    "Id": 9,
+    "locationId": "london-uk",
+    "hour": "2024-01-15T23:00:00Z",
+    "temperature": 17,
+    "condition": "cloudy",
+    "precipitationChance": 35,
+    "icon": "cloudy"
+  },
+  {
+    "Id": 10,
+    "locationId": "london-uk",
+    "hour": "2024-01-16T00:00:00Z",
+    "temperature": 16,
+    "condition": "cloudy",
+    "precipitationChance": 40,
+    "icon": "cloudy"
+  },
+  {
+    "Id": 11,
+    "locationId": "new-york-us",
+    "hour": "2024-01-15T20:00:00Z",
+    "temperature": 18,
+    "condition": "sunny",
+    "precipitationChance": 0,
+    "icon": "clear-day"
+  },
+  {
+    "Id": 12,
+    "locationId": "new-york-us",
+    "hour": "2024-01-15T21:00:00Z",
+    "temperature": 16,
+    "condition": "clear",
+    "precipitationChance": 0,
+    "icon": "clear-night"
+  }
+]

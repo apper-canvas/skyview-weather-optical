@@ -1,0 +1,112 @@
+[
+  {
+    "Id": 1,
+    "locationId": "london-uk",
+    "date": "2024-01-15T00:00:00Z",
+    "highTemp": 24,
+    "lowTemp": 16,
+    "condition": "partly-cloudy",
+    "precipitationChance": 20,
+    "precipitationAmount": 0,
+    "icon": "partly-cloudy-day"
+  },
+  {
+    "Id": 2,
+    "locationId": "london-uk",
+    "date": "2024-01-16T00:00:00Z",
+    "highTemp": 26,
+    "lowTemp": 18,
+    "condition": "sunny",
+    "precipitationChance": 10,
+    "precipitationAmount": 0,
+    "icon": "clear-day"
+  },
+  {
+    "Id": 3,
+    "locationId": "london-uk",
+    "date": "2024-01-17T00:00:00Z",
+    "highTemp": 23,
+    "lowTemp": 15,
+    "condition": "rainy",
+    "precipitationChance": 80,
+    "precipitationAmount": 5.2,
+    "icon": "rain"
+  },
+  {
+    "Id": 4,
+    "locationId": "london-uk",
+    "date": "2024-01-18T00:00:00Z",
+    "highTemp": 21,
+    "lowTemp": 13,
+    "condition": "cloudy",
+    "precipitationChance": 40,
+    "precipitationAmount": 0.5,
+    "icon": "cloudy"
+  },
+  {
+    "Id": 5,
+    "locationId": "london-uk",
+    "date": "2024-01-19T00:00:00Z",
+    "highTemp": 25,
+    "lowTemp": 17,
+    "condition": "partly-cloudy",
+    "precipitationChance": 30,
+    "precipitationAmount": 0,
+    "icon": "partly-cloudy-day"
+  },
+  {
+    "Id": 6,
+    "locationId": "london-uk",
+    "date": "2024-01-20T00:00:00Z",
+    "highTemp": 27,
+    "lowTemp": 19,
+    "condition": "sunny",
+    "precipitationChance": 5,
+    "precipitationAmount": 0,
+    "icon": "clear-day"
+  },
+  {
+    "Id": 7,
+    "locationId": "london-uk",
+    "date": "2024-01-21T00:00:00Z",
+    "highTemp": 24,
+    "lowTemp": 16,
+    "condition": "partly-cloudy",
+    "precipitationChance": 25,
+    "precipitationAmount": 0,
+    "icon": "partly-cloudy-day"
+  },
+  {
+    "Id": 8,
+    "locationId": "new-york-us",
+    "date": "2024-01-15T00:00:00Z",
+    "highTemp": 22,
+    "lowTemp": 12,
+    "condition": "sunny",
+    "precipitationChance": 0,
+    "precipitationAmount": 0,
+    "icon": "clear-day"
+  },
+  {
+    "Id": 9,
+    "locationId": "new-york-us",
+    "date": "2024-01-16T00:00:00Z",
+    "highTemp": 19,
+    "lowTemp": 9,
+    "condition": "cloudy",
+    "precipitationChance": 60,
+    "precipitationAmount": 2.1,
+    "icon": "cloudy"
+  },
+  {
+    "Id": 10,
+    "locationId": "new-york-us",
+    "date": "2024-01-17T00:00:00Z",
+    "highTemp": 16,
+    "lowTemp": 6,
+    "condition": "snowy",
+    "precipitationChance": 90,
+    "precipitationAmount": 8.5,
+    "icon": "snow"
+  }
+]

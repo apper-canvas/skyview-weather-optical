@@ -1,0 +1,54 @@
+[
+  {
+    "Id": 1,
+    "locationId": "london-uk",
+    "temperature": 22,
+    "feelsLike": 24,
+    "humidity": 65,
+    "windSpeed": 12,
+    "pressure": 1013,
+    "condition": "partly-cloudy",
+    "description": "Partly Cloudy",
+    "icon": "partly-cloudy-day",
+    "timestamp": "2024-01-15T14:30:00Z"
+  },
+  {
+    "Id": 2,
+    "locationId": "new-york-us",
+    "temperature": 18,
+    "feelsLike": 16,
+    "humidity": 58,
+    "windSpeed": 8,
+    "pressure": 1018,
+    "condition": "sunny",
+    "description": "Sunny",
+    "icon": "clear-day",
+    "timestamp": "2024-01-15T19:30:00Z"
+  },
+  {
+    "Id": 3,
+    "locationId": "tokyo-jp",
+    "temperature": 15,
+    "feelsLike": 13,
+    "humidity": 72,
+    "windSpeed": 6,
+    "pressure": 1020,
+    "condition": "cloudy",
+    "description": "Overcast",
+    "icon": "cloudy",
+    "timestamp": "2024-01-16T03:30:00Z"
+  },
+  {
+    "Id": 4,
+    "locationId": "sydney-au",
+    "temperature": 28,
+    "feelsLike": 32,
+    "humidity": 45,
+    "windSpeed": 15,
+    "pressure": 1008,
+    "condition": "sunny",
+    "description": "Sunny",
+    "icon": "clear-day",
+    "timestamp": "2024-01-16T01:30:00Z"
+  }
+]
