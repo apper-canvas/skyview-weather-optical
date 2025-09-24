@@ -8,7 +8,6 @@ import Error from "@/components/ui/Error";
 import WeeklyForecast from "@/components/organisms/WeeklyForecast";
 import LocationSelector from "@/components/organisms/LocationSelector";
 import HourlyForecast from "@/components/organisms/HourlyForecast";
-import HourlyForecast from "@/components/organisms/HourlyForecast";
 import CurrentWeather from "@/components/organisms/CurrentWeather";
 import Button from "@/components/atoms/Button";
 import { initializeApperClient } from "@/services/api/weatherService";

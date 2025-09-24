@@ -3,12 +3,7 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Get ApperClient instance - will be injected by components
-let apperClient = null;
-
-export const initializeApperClient = (client) => {
-  apperClient = client;
-};
+// Initialize ApperClient instance
 const { ApperClient } = window.ApperSDK;
 
 const apperClient = new ApperClient({
@@ -16,8 +11,11 @@ const apperClient = new ApperClient({
   apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
 });
 
-// Simulate network delay
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// Initialize function for compatibility
+export const initializeApperClient = () => {
+  return Promise.resolve(apperClient);
+};
+
 
 // Current location storage
 let currentUserLocation = null;
