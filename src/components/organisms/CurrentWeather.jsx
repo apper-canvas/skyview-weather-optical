@@ -68,8 +68,8 @@ const CurrentWeather = ({ weather, location, className }) => {
             <div className="text-6xl font-bold text-white mb-2">
               {Math.round(weather.temperature)}°
             </div>
-            <p className="text-xl text-white/90 capitalize mb-2">
-              {weather.description}
+<p className="text-xl text-white/90 capitalize mb-2">
+              {weather.condition?.replace(/-/g, ' ')}
             </p>
             <p className="text-white/80">
               Feels like {Math.round(weather.feelsLike)}°

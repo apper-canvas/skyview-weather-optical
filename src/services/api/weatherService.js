@@ -33,7 +33,7 @@ export const weatherService = {
     }
 
     try {
-      const url = `?action=current&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
+const url = `?action=current&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
 let result;
       try {
 result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
@@ -65,14 +65,13 @@ result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
         }
       }
 
-      // Validate response structure - result is already parsed from edge function
+// Validate response structure - result is already parsed from edge function
       if (!result) {
         throw new Error('No response from server');
       }
 
-      // Parse response if it's a string, otherwise use directly
-      const response = typeof result === 'string' ? JSON.parse(result) : result;
-      
+      // Use result directly - it's already parsed JSON from edge function
+      const response = result;
       // Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch weather data');
@@ -125,14 +124,13 @@ method: 'GET',
           throw new Error(error.message || 'Failed to fetch weather forecast data');
         }
       }
-
-      // Validate response structure - result is already parsed from edge function
+// Validate response structure - result is already parsed from edge function
       if (!result) {
         throw new Error('No response from server');
       }
 
-      // Parse response if it's a string, otherwise use directly
-      const response = typeof result === 'string' ? JSON.parse(result) : result;
+      // Use result directly - it's already parsed JSON from edge function
+      const response = result;
       
       // Check for API success flag
       if (!response.success) {
@@ -187,12 +185,12 @@ headers: {
       }
 
       // Validate response structure - result is already parsed from edge function
-      if (!result) {
+if (!result) {
         throw new Error('No response from server');
       }
 
-      // Parse response if it's a string, otherwise use directly
-      const response = typeof result === 'string' ? JSON.parse(result) : result;
+      // Use result directly - it's already parsed JSON from edge function
+      const response = result;
       
       // Check for API success flag
       if (!response.success) {
@@ -267,14 +265,13 @@ let result;
         }
       }
 
-      // Validate response structure - result is already parsed from edge function
+// Validate response structure - result is already parsed from edge function
       if (!result) {
         throw new Error('No response from server');
       }
 
-      // Parse response if it's a string, otherwise use directly
-      const response = typeof result === 'string' ? JSON.parse(result) : result;
-      
+      // Use result directly - it's already parsed JSON from edge function
+      const response = result;
       // Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch weather data');
@@ -338,14 +335,13 @@ method: 'GET',
         }
       }
 
-      // Validate response structure
+// Validate response structure
       if (!result) {
         throw new Error('No response from server');
       }
 
-      // Parse response if it's a string
-      const response = typeof result === 'string' ? JSON.parse(result) : result;
-      
+      // Use result directly - it's already parsed JSON from edge function
+      const response = result;
 // Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Search request failed');

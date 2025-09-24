@@ -47,10 +47,10 @@ setIsLoading(true);
           errorMessage = "Unable to connect to weather service. Please check your internet connection.";
         } else if (error.message?.includes('Server response error')) {
           errorMessage = "Weather service is temporarily unavailable. Please try again in a moment.";
-        } else if (error.message?.includes('Failed to search locations')) {
+} else if (error.message?.includes('Failed to search locations')) {
           // Extract the specific error from the message
-          const match = error.message.match(/Failed to search locations:?\s*(.+)/);
-          errorMessage = match?.[1] || "Location search service is unavailable. Please try again.";
+          const match = error.message.match(/Failed to search locations[:\s]*(.+)/i);
+          errorMessage = match?.[1]?.trim() || "Location search service is unavailable. Please try again.";
         } else if (error.message?.includes('JSON')) {
           errorMessage = "Data format error. Please try a different search term.";
         } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
