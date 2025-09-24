@@ -292,40 +292,12 @@ try {
       // Parse response if it's a string
       const response = typeof result === 'string' ? JSON.parse(result) : result;
       
-      // Check for API success flag
+// Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Search request failed');
       }
 
-// Safe JSON parsing with validation
-      let response;
-      try {
-        // Check if response has content
-        const contentLength = result.headers.get('content-length');
-        const contentType = result.headers.get('content-type');
-        
-        if (contentLength === '0' || !contentType?.includes('application/json')) {
-          // Return empty array for search results when no content
-          return [];
-        }
-        
-        const text = await result.text();
-        if (!text.trim()) {
-          return [];
-        }
-        
-        response = JSON.parse(text);
-      } catch (jsonError) {
-        console.error('JSON parsing error in search:', jsonError);
-        // For search, return empty array instead of throwing
-        return [];
-      }
-      
-      if (!response.success) {
-        throw new Error(response.error || 'Failed to search locations');
-      }
-
-// Return the data from successful response
+      // Return the data from successful response
       return response.data || [];
     } catch (error) {
       console.error('Location search error:', error);
