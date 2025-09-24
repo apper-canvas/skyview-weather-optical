@@ -15,17 +15,20 @@ let savedLocations = [];
 
 export const weatherService = {
   // Get current weather for current location
-  async getCurrentWeather() {
-    if (!currentUserLocation) {
+async getCurrentWeather(location = null) {
+    const targetLocation = location || currentUserLocation;
+    if (!targetLocation) {
       throw new Error("No current location set");
     }
 
     try {
+      const url = `?action=current&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
       const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ url })
       });
 
       const response = await result.json();
@@ -41,17 +44,20 @@ export const weatherService = {
   },
 
   // Get 7-day forecast for current location
-  async getForecast(days = 7) {
-    if (!currentUserLocation) {
+async getForecast(days = 7, location = null) {
+    const targetLocation = location || currentUserLocation;
+    if (!targetLocation) {
       throw new Error("No current location set");
     }
 
     try {
+      const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
       const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ url })
       });
 
       const response = await result.json();
@@ -67,17 +73,20 @@ export const weatherService = {
   },
 
   // Get hourly forecast for current location
-  async getHourlyForecast(hours = 24) {
-    if (!currentUserLocation) {
+async getHourlyForecast(hours = 24, location = null) {
+    const targetLocation = location || currentUserLocation;
+    if (!targetLocation) {
       throw new Error("No current location set");
     }
 
     try {
+      const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
       const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ url })
       });
 
       const response = await result.json();
@@ -93,17 +102,20 @@ export const weatherService = {
   },
 
   // Get all weather data for current location
-  async getLocationWeather() {
-    if (!currentUserLocation) {
+async getLocationWeather(location = null) {
+    const targetLocation = location || currentUserLocation;
+    if (!targetLocation) {
       throw new Error("No current location set");
     }
 
     try {
+      const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
       const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ url })
       });
 
       const response = await result.json();
@@ -116,6 +128,15 @@ export const weatherService = {
     } catch (error) {
       throw new Error(`Failed to fetch weather data: ${error.message}`);
     }
+  },
+
+  // Location management methods
+  setCurrentLocation(location) {
+    currentUserLocation = location;
+  },
+
+  getCurrentLocation() {
+    return currentUserLocation;
   }
 };
 
@@ -167,17 +188,19 @@ export const locationService = {
   },
 
   // Search locations by name
-  async search(query) {
+async search(query) {
     if (!query || query.trim().length < 2) {
       return [];
     }
 
     try {
+      const url = `?action=search&query=${encodeURIComponent(query)}`;
       const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ url })
       });
 
       const response = await result.json();
