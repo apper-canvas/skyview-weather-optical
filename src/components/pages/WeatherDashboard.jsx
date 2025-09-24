@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
-import CurrentWeather from "@/components/organisms/CurrentWeather";
-import HourlyForecast from "@/components/organisms/HourlyForecast";
+import React, { useEffect, useState } from "react";
+import { locationService, weatherService } from "@/services/api/weatherService";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
 import WeeklyForecast from "@/components/organisms/WeeklyForecast";
 import LocationSelector from "@/components/organisms/LocationSelector";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
+import HourlyForecast from "@/components/organisms/HourlyForecast";
+import HourlyForecast from "@/components/organisms/HourlyForecast";
+import CurrentWeather from "@/components/organisms/CurrentWeather";
 import Button from "@/components/atoms/Button";
-import { weatherService, locationService } from "@/services/api/weatherService";
-import { toast } from "react-toastify";
-
+import { initializeApperClient } from "@/services/api/weatherService";
 const WeatherDashboard = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -26,9 +27,10 @@ const WeatherDashboard = () => {
   const initializeApp = async () => {
     setLoading(true);
     setError(null);
-
-    try {
-// Get current saved location
+try {
+      // Initialize ApperClient in services
+      await initializeApperClient();
+      // Get current saved location
       const location = await locationService.getCurrent();
       
       if (!location) {
@@ -43,7 +45,7 @@ const WeatherDashboard = () => {
       setCurrentLocation(location);
       
       // Load weather data for current location
-      await loadWeatherData(location.id);
+      await loadWeatherData(location);
       
     } catch (err) {
       console.error("Failed to initialize app:", err);
@@ -53,10 +55,10 @@ const WeatherDashboard = () => {
     }
   };
 
-const loadWeatherData = async (locationId) => {
+const loadWeatherData = async (location) => {
     try {
       setError(null);
-      const weather = await weatherService.getLocationWeather(locationId);
+      const weather = await weatherService.getLocationWeather(location);
       setWeatherData(weather);
     } catch (err) {
       console.error("Failed to load weather data:", err);
@@ -65,27 +67,26 @@ const loadWeatherData = async (locationId) => {
     }
   };
 
-  const handleLocationChange = async (location) => {
-// Update current location state
+const handleLocationChange = async (location) => {
+    // Update current location state
     setCurrentLocation(location);
     setShowLocationSelector(false);
     
     // Load weather data for new location
     setLoading(true);
-    await loadWeatherData(location.id);
+    await loadWeatherData(location);
     setLoading(false);
   };
 
-  const handleRefresh = async () => {
+const handleRefresh = async () => {
     if (!currentLocation) return;
     
     setRefreshing(true);
-try {
-      if (currentLocation?.id) {
-        await loadWeatherData(currentLocation.id);
-      }
+    try {
+      await loadWeatherData(currentLocation);
       toast.success("Weather data updated!");
     } catch (err) {
+      console.error("Failed to refresh:", err);
       toast.error("Failed to refresh weather data");
     } finally {
       setRefreshing(false);
@@ -110,7 +111,7 @@ if (!currentLocation || !weatherData) {
         title="Welcome to SkyView"
         description="Search and save locations to get started with accurate weather forecasts for your daily planning."
         actionText="Choose Location"
-        onAction={handleEnableLocation}
+        onAction={() => setShowLocationSelector(true)}
       />
     );
   }
@@ -147,10 +148,13 @@ if (!currentLocation || !weatherData) {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button
+<Button
               variant="ghost"
               size="sm"
-              onClick={() => setShowLocationSelector(!showLocationSelector)}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowLocationSelector(!showLocationSelector);
+              }}
               className="p-2"
             >
               <ApperIcon name="MapPin" size={18} />

@@ -1,6 +1,14 @@
-import React from "react";
-import Error from "@/components/ui/Error";
-// Initialize ApperClient for edge function communication
+// Delay utility for simulating network calls
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Get ApperClient instance - will be injected by components
+let apperClient = null;
+
+export const initializeApperClient = (client) => {
+  apperClient = client;
+};
 const { ApperClient } = window.ApperSDK;
 
 const apperClient = new ApperClient({
@@ -14,13 +22,16 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // Current location storage
 let currentUserLocation = null;
 let savedLocations = [];
-
 export const weatherService = {
-  // Get current weather for current location
-async getCurrentWeather(location = null) {
+  // Get current weather for location
+  async getCurrentWeather(location = null) {
     const targetLocation = location || currentUserLocation;
     if (!targetLocation) {
       throw new Error("No current location set");
+    }
+
+    if (!apperClient) {
+      throw new Error("ApperClient not initialized");
     }
 
     try {
@@ -45,11 +56,15 @@ async getCurrentWeather(location = null) {
     }
   },
 
-  // Get 7-day forecast for current location
-async getForecast(days = 7, location = null) {
+  // Get 7-day forecast for location
+  async getForecast(days = 7, location = null) {
     const targetLocation = location || currentUserLocation;
     if (!targetLocation) {
       throw new Error("No current location set");
+    }
+
+    if (!apperClient) {
+      throw new Error("ApperClient not initialized");
     }
 
     try {
@@ -74,11 +89,15 @@ async getForecast(days = 7, location = null) {
     }
   },
 
-  // Get hourly forecast for current location
-async getHourlyForecast(hours = 24, location = null) {
+  // Get hourly forecast for location
+  async getHourlyForecast(hours = 24, location = null) {
     const targetLocation = location || currentUserLocation;
     if (!targetLocation) {
       throw new Error("No current location set");
+    }
+
+    if (!apperClient) {
+      throw new Error("ApperClient not initialized");
     }
 
     try {
@@ -103,11 +122,35 @@ async getHourlyForecast(hours = 24, location = null) {
     }
   },
 
-  // Get all weather data for current location
-async getLocationWeather(location = null) {
-    const targetLocation = location || currentUserLocation;
+  // Get all weather data for location (accepts both location object and locationId)
+  async getLocationWeather(locationOrId = null) {
+    let targetLocation;
+    
+    if (typeof locationOrId === 'object' && locationOrId !== null) {
+      // It's a location object
+      targetLocation = locationOrId;
+    } else if (typeof locationOrId === 'string' || typeof locationOrId === 'number') {
+      // It's a location ID, find the location object
+      if (currentUserLocation && currentUserLocation.id === locationOrId) {
+        targetLocation = currentUserLocation;
+      } else {
+        // Try to find in saved locations
+        targetLocation = savedLocations.find(loc => loc.id === locationOrId);
+        if (!targetLocation) {
+          throw new Error("Location not found");
+        }
+      }
+    } else {
+      // Use current location
+      targetLocation = currentUserLocation;
+    }
+
     if (!targetLocation) {
-      throw new Error("No current location set");
+      throw new Error("No location specified");
+    }
+
+    if (!apperClient) {
+      throw new Error("ApperClient not initialized");
     }
 
     try {
@@ -132,7 +175,7 @@ async getLocationWeather(location = null) {
     }
   },
 
-// Location management methods
+  // Location management methods
   setCurrentLocation(location) {
     currentUserLocation = { ...location, isCurrentLocation: true };
   },
@@ -147,6 +190,10 @@ export const locationService = {
   async search(query) {
     if (!query || query.trim().length < 2) {
       return [];
+    }
+
+    if (!apperClient) {
+      throw new Error("ApperClient not initialized");
     }
 
     try {
@@ -178,7 +225,7 @@ export const locationService = {
   },
 
   // Get current location
-async getCurrent() {
+  async getCurrent() {
     if (!currentUserLocation) {
       return null;
     }
@@ -206,7 +253,7 @@ async getCurrent() {
     return true;
   },
 
-// Set current location
+  // Set current location
   async setCurrent(location) {
     await delay(200);
     
@@ -215,11 +262,14 @@ async getCurrent() {
     if (typeof location === 'object' && location.id) {
       locationToSet = location;
     } else {
-      // If passed an ID, find the location
-      const allLocations = await this.search('');
-      locationToSet = allLocations.find(loc => loc.id === location);
-      if (!locationToSet) {
-        throw new Error('Location not found');
+      // If passed an ID, find the location in saved locations or current
+      if (currentUserLocation && currentUserLocation.id === location) {
+        locationToSet = currentUserLocation;
+      } else {
+        locationToSet = savedLocations.find(loc => loc.id === location);
+        if (!locationToSet) {
+          throw new Error('Location not found');
+        }
       }
     }
     

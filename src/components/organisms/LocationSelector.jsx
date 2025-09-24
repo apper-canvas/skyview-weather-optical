@@ -19,12 +19,13 @@ const LocationSelector = ({
     loadSavedLocations();
   }, []);
 
-  const loadSavedLocations = async () => {
+const loadSavedLocations = async () => {
     try {
       const locations = await locationService.getSaved();
       setSavedLocations(locations);
     } catch (error) {
       console.error("Failed to load saved locations:", error);
+      toast.error("Failed to load saved locations");
     }
   };
 
@@ -53,7 +54,8 @@ const handleLocationSelect = async (location) => {
     }
   };
 
-  const handleRemoveLocation = async (locationId, event) => {
+const handleRemoveLocation = async (locationId, event) => {
+    event.preventDefault();
     event.stopPropagation();
     
     try {
@@ -77,10 +79,13 @@ const handleLocationSelect = async (location) => {
           </h2>
         </div>
         
-        <Button
+<Button
           variant="ghost"
           size="sm"
-          onClick={() => setShowSearch(!showSearch)}
+          onClick={(e) => {
+            e.preventDefault();
+            setShowSearch(!showSearch);
+          }}
           className="text-primary"
         >
           <ApperIcon name={showSearch ? "X" : "Search"} size={16} />
@@ -131,7 +136,8 @@ const handleLocationSelect = async (location) => {
 location.isCurrentLocation && "ring-2 ring-primary/30 bg-primary/5"
                 )}
                 onClick={(e) => {
-                  e.preventDefault();
+e.preventDefault();
+                  e.stopPropagation();
                   handleLocationSelect(location);
                 }}
               >
