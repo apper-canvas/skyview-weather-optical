@@ -65,33 +65,18 @@ try {
         }
       }
 
-// Safe JSON parsing with validation
-      let response;
-      try {
-        // Check if response has content
-        const contentLength = result.headers.get('content-length');
-        const contentType = result.headers.get('content-type');
-        
-        if (contentLength === '0' || !contentType?.includes('application/json')) {
-          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
-        }
-        
-        const text = await result.text();
-        if (!text.trim()) {
-          throw new Error('Empty response body');
-        }
-        
-        response = JSON.parse(text);
-      } catch (jsonError) {
-        console.error('JSON parsing error:', jsonError);
-        throw new Error(`Failed to parse weather data: ${jsonError.message}`);
+// Validate response structure - result is already parsed from edge function
+      if (!result) {
+        throw new Error('No response from server');
       }
+
+      // Parse response if it's a string, otherwise use directly
+      const response = typeof result === 'string' ? JSON.parse(result) : result;
       
+      // Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch weather data');
       }
-
-      return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch current weather: ${error.message}`);
     }
@@ -141,33 +126,18 @@ try {
         }
       }
 
-// Safe JSON parsing with validation
-      let response;
-      try {
-        // Check if response has content
-        const contentLength = result.headers.get('content-length');
-        const contentType = result.headers.get('content-type');
-        
-        if (contentLength === '0' || !contentType?.includes('application/json')) {
-          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
-        }
-        
-        const text = await result.text();
-        if (!text.trim()) {
-          throw new Error('Empty response body');
-        }
-        
-        response = JSON.parse(text);
-      } catch (jsonError) {
-        console.error('JSON parsing error:', jsonError);
-        throw new Error(`Failed to parse forecast data: ${jsonError.message}`);
+// Validate response structure - result is already parsed from edge function
+      if (!result) {
+        throw new Error('No response from server');
       }
+
+      // Parse response if it's a string, otherwise use directly
+      const response = typeof result === 'string' ? JSON.parse(result) : result;
       
+      // Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch forecast data');
       }
-
-      return response.data.forecast.slice(0, days);
     } catch (error) {
       throw new Error(`Failed to fetch forecast: ${error.message}`);
     }
@@ -217,33 +187,18 @@ try {
         }
       }
 
-// Safe JSON parsing with validation
-      let response;
-      try {
-        // Check if response has content
-        const contentLength = result.headers.get('content-length');
-        const contentType = result.headers.get('content-type');
-        
-        if (contentLength === '0' || !contentType?.includes('application/json')) {
-          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
-        }
-        
-        const text = await result.text();
-        if (!text.trim()) {
-          throw new Error('Empty response body');
-        }
-        
-        response = JSON.parse(text);
-      } catch (jsonError) {
-        console.error('JSON parsing error:', jsonError);
-        throw new Error(`Failed to parse hourly forecast data: ${jsonError.message}`);
+// Validate response structure - result is already parsed from edge function
+      if (!result) {
+        throw new Error('No response from server');
       }
+
+      // Parse response if it's a string, otherwise use directly
+      const response = typeof result === 'string' ? JSON.parse(result) : result;
       
+      // Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch hourly data');
       }
-
-      return response.data.hourly.slice(0, hours);
     } catch (error) {
       throw new Error(`Failed to fetch hourly forecast: ${error.message}`);
     }
@@ -313,33 +268,18 @@ try {
         }
       }
 
-// Safe JSON parsing with validation
-      let response;
-      try {
-        // Check if response has content
-        const contentLength = result.headers.get('content-length');
-        const contentType = result.headers.get('content-type');
-        
-        if (contentLength === '0' || !contentType?.includes('application/json')) {
-          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
-        }
-        
-        const text = await result.text();
-        if (!text.trim()) {
-          throw new Error('Empty response body');
-        }
-        
-        response = JSON.parse(text);
-      } catch (jsonError) {
-        console.error('JSON parsing error:', jsonError);
-        throw new Error(`Failed to parse historical data: ${jsonError.message}`);
+// Validate response structure - result is already parsed from edge function
+      if (!result) {
+        throw new Error('No response from server');
       }
+
+      // Parse response if it's a string, otherwise use directly
+      const response = typeof result === 'string' ? JSON.parse(result) : result;
       
+      // Check for API success flag
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch weather data');
       }
-
-      return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch weather data: ${error.message}`);
     }
