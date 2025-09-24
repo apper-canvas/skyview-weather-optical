@@ -34,8 +34,9 @@ export const weatherService = {
 
     try {
       const url = `?action=current&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-try {
-        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+let result;
+      try {
+        result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -65,7 +66,7 @@ try {
         }
       }
 
-// Validate response structure - result is already parsed from edge function
+      // Validate response structure - result is already parsed from edge function
       if (!result) {
         throw new Error('No response from server');
       }
@@ -95,8 +96,9 @@ try {
 
     try {
       const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-try {
-        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+let result;
+      try {
+        result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -126,7 +128,7 @@ try {
         }
       }
 
-// Validate response structure - result is already parsed from edge function
+      // Validate response structure - result is already parsed from edge function
       if (!result) {
         throw new Error('No response from server');
       }
@@ -156,8 +158,9 @@ try {
 
     try {
       const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-try {
-        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+let result;
+      try {
+        result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -187,7 +190,7 @@ try {
         }
       }
 
-// Validate response structure - result is already parsed from edge function
+      // Validate response structure - result is already parsed from edge function
       if (!result) {
         throw new Error('No response from server');
       }
@@ -237,8 +240,9 @@ try {
 
     try {
       const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-try {
-        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+let result;
+      try {
+        result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -268,7 +272,7 @@ try {
         }
       }
 
-// Validate response structure - result is already parsed from edge function
+      // Validate response structure - result is already parsed from edge function
       if (!result) {
         throw new Error('No response from server');
       }
@@ -308,8 +312,9 @@ export const locationService = {
 
 try {
       const url = `?action=search&query=${encodeURIComponent(query)}`;
-try {
-        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+let result;
+      try {
+        result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
