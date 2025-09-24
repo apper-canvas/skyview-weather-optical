@@ -36,12 +36,11 @@ export const weatherService = {
       const url = `?action=current&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
 let result;
       try {
-        result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ url })
+          }
         });
         
         if (!result || typeof result !== 'object') {
@@ -99,11 +98,10 @@ let result;
 let result;
       try {
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-          method: 'GET',
+method: 'GET',
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ url })
+          }
         });
         
         if (!result || typeof result !== 'object') {
@@ -162,12 +160,10 @@ let result;
       try {
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
-          headers: {
+headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ url })
+          }
         });
-        
         if (!result || typeof result !== 'object') {
           throw new Error('Invalid response format from weather service');
         }
@@ -245,9 +241,8 @@ let result;
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ url })
+'Content-Type': 'application/json'
+          }
         });
         
         if (!result || typeof result !== 'object') {
@@ -315,11 +310,10 @@ try {
 let result;
       try {
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-          method: 'GET',
+method: 'GET',
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ url })
+          }
         });
         
         if (!result || typeof result !== 'object') {
