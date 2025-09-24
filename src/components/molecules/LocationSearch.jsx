@@ -38,12 +38,25 @@ setIsLoading(true);
       } catch (error) {
         console.error("Search failed:", error);
         
-        // Provide specific error feedback
+        // Enhanced error message extraction
         let errorMessage = "Search failed. Please try again.";
-        if (error.message?.includes('JSON')) {
-          errorMessage = "Server response error. Please try again in a moment.";
-        } else if (error.message?.includes('Failed to fetch')) {
+        
+        // Extract specific error messages from API responses
+        if (error.message?.includes('Server connection failed')) {
+          errorMessage = "Unable to connect to weather service. Please check your internet connection.";
+        } else if (error.message?.includes('Server response error')) {
+          errorMessage = "Weather service is temporarily unavailable. Please try again in a moment.";
+        } else if (error.message?.includes('Failed to search locations')) {
+          // Extract the specific error from the message
+          const match = error.message.match(/Failed to search locations:?\s*(.+)/);
+          errorMessage = match?.[1] || "Location search service is unavailable. Please try again.";
+        } else if (error.message?.includes('JSON')) {
+          errorMessage = "Data format error. Please try a different search term.";
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
           errorMessage = "Network error. Check your connection and try again.";
+        } else if (error.message) {
+          // Use the error message if it's user-friendly
+          errorMessage = error.message;
         }
         
         // You could show this error to user via toast notification

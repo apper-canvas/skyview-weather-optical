@@ -274,7 +274,7 @@ export const locationService = {
       throw new Error("ApperClient not initialized");
     }
 
-    try {
+try {
       const url = `?action=search&query=${encodeURIComponent(query)}`;
       const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
         method: 'GET',
@@ -283,6 +283,19 @@ export const locationService = {
         },
         body: JSON.stringify({ url })
       });
+
+      // Validate response structure
+      if (!result) {
+        throw new Error('No response from server');
+      }
+
+      // Parse response if it's a string
+      const response = typeof result === 'string' ? JSON.parse(result) : result;
+      
+      // Check for API success flag
+      if (!response.success) {
+        throw new Error(response.error || 'Search request failed');
+      }
 
 // Safe JSON parsing with validation
       let response;
@@ -312,9 +325,25 @@ export const locationService = {
         throw new Error(response.error || 'Failed to search locations');
       }
 
-      return response.data;
+// Return the data from successful response
+      return response.data || [];
     } catch (error) {
-      throw new Error(`Failed to search locations: ${error.message}`);
+      console.error('Location search error:', error);
+      
+      // Enhanced error message with more context
+      let errorMessage = 'Failed to search locations';
+      
+      if (error.message?.includes('No response from server')) {
+        errorMessage = 'Server connection failed. Please try again.';
+      } else if (error.message?.includes('Search request failed')) {
+        errorMessage = error.message;
+      } else if (error.message?.includes('JSON')) {
+        errorMessage = 'Server response error. Please try again later.';
+      } else if (error.message) {
+        errorMessage += `: ${error.message}`;
+      }
+      
+      throw new Error(errorMessage);
     }
   },
 
