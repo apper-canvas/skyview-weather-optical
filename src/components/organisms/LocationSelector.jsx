@@ -7,7 +7,7 @@ import { locationService } from "@/services/api/weatherService";
 import { toast } from "react-toastify";
 
 const LocationSelector = ({ 
-  currentLocation, 
+currentLocation, 
   onLocationChange, 
   className 
 }) => {
@@ -68,39 +68,25 @@ const handleRemoveLocation = async (locationId, event) => {
     }
   };
 
-  return (
+return (
     <div className={cn("space-y-4", className)}>
-      {/* Current Location Header */}
+      {/* Search First Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ApperIcon name="Navigation" size={20} className="text-primary" />
+          <ApperIcon name="Search" size={20} className="text-primary" />
           <h2 className="text-lg font-semibold text-gray-900">
-            Weather Location
+            Search Weather Location
           </h2>
         </div>
-        
-<Button
-          variant="ghost"
-          size="sm"
-          onClick={(e) => {
-            e.preventDefault();
-            setShowSearch(!showSearch);
-          }}
-          className="text-primary"
-        >
-          <ApperIcon name={showSearch ? "X" : "Search"} size={16} />
-        </Button>
       </div>
 
-      {/* Search Section */}
-      {showSearch && (
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
-          <LocationSearch
-            onLocationSelect={handleLocationSelect}
-            placeholder="Search for a city to add..."
-          />
-        </div>
-      )}
+      {/* Primary Search Section - Always Visible */}
+      <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
+        <LocationSearch
+          onLocationSelect={handleLocationSelect}
+          placeholder="Search for any city worldwide..."
+        />
+      </div>
 
       {/* Current Location Display */}
       {currentLocation && (
@@ -125,7 +111,7 @@ const handleRemoveLocation = async (locationId, event) => {
       {savedLocations.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-gray-700 uppercase tracking-wide">
-            Saved Locations
+            Recently Searched
           </h3>
           <div className="space-y-2">
             {savedLocations.map((location) => (
@@ -133,10 +119,10 @@ const handleRemoveLocation = async (locationId, event) => {
                 key={location.id}
                 className={cn(
                   "bg-white/70 backdrop-blur-md rounded-xl p-3 border border-white/20 transition-all duration-200 cursor-pointer hover:bg-white/80 hover:shadow-md group",
-location.isCurrentLocation && "ring-2 ring-primary/30 bg-primary/5"
+                  location.isCurrentLocation && "ring-2 ring-primary/30 bg-primary/5"
                 )}
                 onClick={(e) => {
-e.preventDefault();
+                  e.preventDefault();
                   e.stopPropagation();
                   handleLocationSelect(location);
                 }}
@@ -174,6 +160,7 @@ e.preventDefault();
                       <button
                         onClick={(e) => handleRemoveLocation(location.id, e)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-400 hover:text-red-500 p-1"
+                        title="Remove from history"
                       >
                         <ApperIcon name="X" size={14} />
                       </button>
@@ -185,6 +172,13 @@ e.preventDefault();
           </div>
         </div>
       )}
+
+      {/* Help Text */}
+      <div className="text-center">
+        <p className="text-xs text-gray-500">
+          Search for any city worldwide to get accurate weather forecasts
+        </p>
+      </div>
     </div>
   );
 };

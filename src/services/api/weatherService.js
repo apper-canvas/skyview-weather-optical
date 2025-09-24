@@ -217,12 +217,12 @@ export const locationService = {
   },
 
   // Get all saved locations
-  async getSaved() {
+async getSaved() {
     await delay(200);
     return [...savedLocations];
   },
 
-  // Get current location
+  // Get current location (selected city)
   async getCurrent() {
     if (!currentUserLocation) {
       return null;
@@ -230,28 +230,36 @@ export const locationService = {
     return { ...currentUserLocation };
   },
 
-  // Save a location
+  // Save a searched location to history
   async save(location) {
     await delay(200);
     const existingIndex = savedLocations.findIndex(l => l.id === location.id);
     
     if (existingIndex === -1) {
-      savedLocations.push({ ...location, isSaved: true });
+      // Add to beginning of list (most recent first)
+      savedLocations.unshift({ ...location, isSaved: true });
+      
+      // Keep only last 10 searches to avoid clutter
+      if (savedLocations.length > 10) {
+        savedLocations = savedLocations.slice(0, 10);
+      }
     } else {
-      savedLocations[existingIndex] = { ...location, isSaved: true };
+      // Move to front if already exists
+      savedLocations.splice(existingIndex, 1);
+      savedLocations.unshift({ ...location, isSaved: true });
     }
     
     return { ...location, isSaved: true };
   },
 
-  // Remove a saved location
+  // Remove a location from search history
   async unsave(locationId) {
     await delay(200);
     savedLocations = savedLocations.filter(l => l.id !== locationId);
     return true;
   },
 
-  // Set current location
+  // Set current selected city
   async setCurrent(location) {
     await delay(200);
     
@@ -266,7 +274,7 @@ export const locationService = {
       } else {
         locationToSet = savedLocations.find(loc => loc.id === location);
         if (!locationToSet) {
-          throw new Error('Location not found');
+          throw new Error('City not found in search history');
         }
       }
     }
@@ -277,7 +285,7 @@ export const locationService = {
       isSaved: true 
     };
     
-    // Also save to saved locations
+    // Also save to search history
     await this.save(currentUserLocation);
     
     return { ...currentUserLocation };
