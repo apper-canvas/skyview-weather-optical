@@ -41,9 +41,9 @@ const Error = ({ message = "Something went wrong", onRetry }) => {
           </div>
 
           {/* Additional Help */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
+<div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              Make sure you have an internet connection and location services enabled.
+              Make sure you have an internet connection and try refreshing the page.
             </p>
           </div>
         </div>

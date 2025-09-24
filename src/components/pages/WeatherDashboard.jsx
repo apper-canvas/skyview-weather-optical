@@ -28,11 +28,11 @@ const WeatherDashboard = () => {
     setError(null);
 
     try {
-      // Get current location
+// Get current saved location
       const location = await locationService.getCurrent();
       
       if (!location) {
-        // No current location set, show location selector
+        // No current location saved, show location selector
         setCurrentLocation(null);
         setWeatherData(null);
         setShowLocationSelector(true);
@@ -101,11 +101,11 @@ const WeatherDashboard = () => {
     return <Error message={error} onRetry={initializeApp} />;
   }
 
-  if (!currentLocation || !weatherData) {
+if (!currentLocation || !weatherData) {
     return (
       <Empty
         title="Welcome to SkyView"
-        description="Choose a location to get started with accurate weather forecasts for your daily planning."
+        description="Search and save locations to get started with accurate weather forecasts for your daily planning."
         actionText="Choose Location"
         onAction={handleEnableLocation}
       />

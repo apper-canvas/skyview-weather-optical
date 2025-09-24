@@ -1,3 +1,5 @@
+import React from "react";
+import Error from "@/components/ui/Error";
 // Initialize ApperClient for edge function communication
 const { ApperClient } = window.ApperSDK;
 
@@ -141,54 +143,8 @@ async getLocationWeather(location = null) {
 };
 
 export const locationService = {
-  // Get user's current geolocation
-  async getCurrentPosition() {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation is not supported by this browser"));
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const location = {
-            id: 1,
-            name: "Current Location",
-            country: "Auto-detected",
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-            isCurrentLocation: true,
-            isSaved: true
-          };
-          currentUserLocation = location;
-          resolve(location);
-        },
-        (error) => {
-          let errorMessage = "Failed to get location";
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              errorMessage = "Location access denied by user";
-              break;
-            case error.POSITION_UNAVAILABLE:
-              errorMessage = "Location information unavailable";
-              break;
-            case error.TIMEOUT:
-              errorMessage = "Location request timed out";
-              break;
-          }
-          reject(new Error(errorMessage));
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000 // 5 minutes
-        }
-      );
-    });
-  },
-
   // Search locations by name
-async search(query) {
+  async search(query) {
     if (!query || query.trim().length < 2) {
       return [];
     }
@@ -222,13 +178,9 @@ async search(query) {
   },
 
   // Get current location
-  async getCurrent() {
+async getCurrent() {
     if (!currentUserLocation) {
-      try {
-        return await this.getCurrentPosition();
-      } catch (error) {
-        return null;
-      }
+      return null;
     }
     return { ...currentUserLocation };
   },
