@@ -85,10 +85,14 @@ const LocationSearch = ({ onLocationSelect, placeholder = "Search for a city..."
         <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden z-50 max-h-60 overflow-y-auto">
           {results.length > 0 ? (
             results.map((location) => (
-              <button
+<button
                 key={location.id}
-                onClick={() => handleLocationSelect(location)}
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 flex items-center justify-between group"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleLocationSelect(location);
+                }}
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 flex items-center justify-between group cursor-pointer"
               >
                 <div>
                   <div className="font-medium text-gray-900">{location.name}</div>

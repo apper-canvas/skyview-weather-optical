@@ -28,17 +28,18 @@ const LocationSelector = ({
     }
   };
 
-  const handleLocationSelect = async (location) => {
+const handleLocationSelect = async (location) => {
     setLoading(true);
     try {
-      // Set as current location
-      await locationService.setCurrent(location.id);
+      // Set as current location - pass the full location object
+      await locationService.setCurrent(location);
       
       // Refresh saved locations
       await loadSavedLocations();
       
-      // Notify parent component
-      onLocationChange(location);
+      // Notify parent component with the updated location
+      const updatedLocation = { ...location, isCurrentLocation: true, isSaved: true };
+      onLocationChange(updatedLocation);
       
       // Close search
       setShowSearch(false);
@@ -127,9 +128,12 @@ const LocationSelector = ({
                 key={location.id}
                 className={cn(
                   "bg-white/70 backdrop-blur-md rounded-xl p-3 border border-white/20 transition-all duration-200 cursor-pointer hover:bg-white/80 hover:shadow-md group",
-                  location.isCurrentLocation && "ring-2 ring-primary/30 bg-primary/5"
+location.isCurrentLocation && "ring-2 ring-primary/30 bg-primary/5"
                 )}
-                onClick={() => handleLocationSelect(location)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLocationSelect(location);
+                }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">

@@ -53,7 +53,7 @@ const WeatherDashboard = () => {
     }
   };
 
-  const loadWeatherData = async (locationId) => {
+const loadWeatherData = async (locationId) => {
     try {
       setError(null);
       const weather = await weatherService.getLocationWeather(locationId);
@@ -66,6 +66,7 @@ const WeatherDashboard = () => {
   };
 
   const handleLocationChange = async (location) => {
+// Update current location state
     setCurrentLocation(location);
     setShowLocationSelector(false);
     
@@ -79,8 +80,10 @@ const WeatherDashboard = () => {
     if (!currentLocation) return;
     
     setRefreshing(true);
-    try {
-      await loadWeatherData(currentLocation.id);
+try {
+      if (currentLocation?.id) {
+        await loadWeatherData(currentLocation.id);
+      }
       toast.success("Weather data updated!");
     } catch (err) {
       toast.error("Failed to refresh weather data");

@@ -132,13 +132,13 @@ async getLocationWeather(location = null) {
     }
   },
 
-  // Location management methods
+// Location management methods
   setCurrentLocation(location) {
-    currentUserLocation = location;
+    currentUserLocation = { ...location, isCurrentLocation: true };
   },
 
   getCurrentLocation() {
-    return currentUserLocation;
+    return currentUserLocation ? { ...currentUserLocation } : null;
   }
 };
 
@@ -206,11 +206,25 @@ async getCurrent() {
     return true;
   },
 
-  // Set current location
+// Set current location
   async setCurrent(location) {
     await delay(200);
+    
+    // Handle both location objects and IDs
+    let locationToSet;
+    if (typeof location === 'object' && location.id) {
+      locationToSet = location;
+    } else {
+      // If passed an ID, find the location
+      const allLocations = await this.search('');
+      locationToSet = allLocations.find(loc => loc.id === location);
+      if (!locationToSet) {
+        throw new Error('Location not found');
+      }
+    }
+    
     currentUserLocation = { 
-      ...location, 
+      ...locationToSet, 
       isCurrentLocation: true,
       isSaved: true 
     };
