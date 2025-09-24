@@ -30,14 +30,27 @@ const LocationSearch = ({ onLocationSelect, placeholder = "Search for a city..."
         return;
       }
 
-      setIsLoading(true);
+setIsLoading(true);
       try {
         const searchResults = await locationService.search(query);
-        setResults(searchResults);
+        setResults(Array.isArray(searchResults) ? searchResults : []);
         setShowResults(true);
       } catch (error) {
         console.error("Search failed:", error);
+        
+        // Provide specific error feedback
+        let errorMessage = "Search failed. Please try again.";
+        if (error.message?.includes('JSON')) {
+          errorMessage = "Server response error. Please try again in a moment.";
+        } else if (error.message?.includes('Failed to fetch')) {
+          errorMessage = "Network error. Check your connection and try again.";
+        }
+        
+        // You could show this error to user via toast notification
+        // toast.error(errorMessage);
+        
         setResults([]);
+        setShowResults(false);
       } finally {
         setIsLoading(false);
       }

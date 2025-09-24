@@ -42,7 +42,27 @@ export const weatherService = {
         body: JSON.stringify({ url })
       });
 
-      const response = await result.json();
+// Safe JSON parsing with validation
+      let response;
+      try {
+        // Check if response has content
+        const contentLength = result.headers.get('content-length');
+        const contentType = result.headers.get('content-type');
+        
+        if (contentLength === '0' || !contentType?.includes('application/json')) {
+          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
+        }
+        
+        const text = await result.text();
+        if (!text.trim()) {
+          throw new Error('Empty response body');
+        }
+        
+        response = JSON.parse(text);
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        throw new Error(`Failed to parse weather data: ${jsonError.message}`);
+      }
       
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch weather data');
@@ -75,7 +95,27 @@ export const weatherService = {
         body: JSON.stringify({ url })
       });
 
-      const response = await result.json();
+// Safe JSON parsing with validation
+      let response;
+      try {
+        // Check if response has content
+        const contentLength = result.headers.get('content-length');
+        const contentType = result.headers.get('content-type');
+        
+        if (contentLength === '0' || !contentType?.includes('application/json')) {
+          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
+        }
+        
+        const text = await result.text();
+        if (!text.trim()) {
+          throw new Error('Empty response body');
+        }
+        
+        response = JSON.parse(text);
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        throw new Error(`Failed to parse forecast data: ${jsonError.message}`);
+      }
       
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch forecast data');
@@ -108,7 +148,27 @@ export const weatherService = {
         body: JSON.stringify({ url })
       });
 
-      const response = await result.json();
+// Safe JSON parsing with validation
+      let response;
+      try {
+        // Check if response has content
+        const contentLength = result.headers.get('content-length');
+        const contentType = result.headers.get('content-type');
+        
+        if (contentLength === '0' || !contentType?.includes('application/json')) {
+          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
+        }
+        
+        const text = await result.text();
+        if (!text.trim()) {
+          throw new Error('Empty response body');
+        }
+        
+        response = JSON.parse(text);
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        throw new Error(`Failed to parse hourly forecast data: ${jsonError.message}`);
+      }
       
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch hourly data');
@@ -161,7 +221,27 @@ export const weatherService = {
         body: JSON.stringify({ url })
       });
 
-      const response = await result.json();
+// Safe JSON parsing with validation
+      let response;
+      try {
+        // Check if response has content
+        const contentLength = result.headers.get('content-length');
+        const contentType = result.headers.get('content-type');
+        
+        if (contentLength === '0' || !contentType?.includes('application/json')) {
+          throw new Error(`Invalid response: ${result.status} ${result.statusText}`);
+        }
+        
+        const text = await result.text();
+        if (!text.trim()) {
+          throw new Error('Empty response body');
+        }
+        
+        response = JSON.parse(text);
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        throw new Error(`Failed to parse historical data: ${jsonError.message}`);
+      }
       
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch weather data');
@@ -204,7 +284,29 @@ export const locationService = {
         body: JSON.stringify({ url })
       });
 
-      const response = await result.json();
+// Safe JSON parsing with validation
+      let response;
+      try {
+        // Check if response has content
+        const contentLength = result.headers.get('content-length');
+        const contentType = result.headers.get('content-type');
+        
+        if (contentLength === '0' || !contentType?.includes('application/json')) {
+          // Return empty array for search results when no content
+          return [];
+        }
+        
+        const text = await result.text();
+        if (!text.trim()) {
+          return [];
+        }
+        
+        response = JSON.parse(text);
+      } catch (jsonError) {
+        console.error('JSON parsing error in search:', jsonError);
+        // For search, return empty array instead of throwing
+        return [];
+      }
       
       if (!response.success) {
         throw new Error(response.error || 'Failed to search locations');
