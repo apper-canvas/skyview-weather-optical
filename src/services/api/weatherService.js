@@ -34,13 +34,36 @@ export const weatherService = {
 
     try {
       const url = `?action=current&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url })
-      });
+try {
+        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url })
+        });
+        
+        if (!result || typeof result !== 'object') {
+          throw new Error('Invalid response format from weather service');
+        }
+        
+        if (result.error) {
+          throw new Error(result.error.message || 'Weather service error');
+        }
+      } catch (error) {
+        console.error('Weather service error:', error);
+        
+        // Categorize errors for better user experience
+        if (error.message?.includes('500')) {
+          throw new Error('Weather service is temporarily unavailable. Please try again in a moment.');
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
+          throw new Error('Network connection failed. Please check your internet connection.');
+        } else if (error.message?.includes('Invalid response')) {
+          throw new Error('Weather data format error. Please try refreshing the page.');
+        } else {
+          throw new Error(error.message || 'Failed to fetch current weather data');
+        }
+      }
 
 // Safe JSON parsing with validation
       let response;
@@ -87,13 +110,36 @@ export const weatherService = {
 
     try {
       const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url })
-      });
+try {
+        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url })
+        });
+        
+        if (!result || typeof result !== 'object') {
+          throw new Error('Invalid response format from weather service');
+        }
+        
+        if (result.error) {
+          throw new Error(result.error.message || 'Weather service error');
+        }
+      } catch (error) {
+        console.error('Weather forecast service error:', error);
+        
+        // Categorize errors for better user experience
+        if (error.message?.includes('500')) {
+          throw new Error('Weather forecast service is temporarily unavailable. Please try again in a moment.');
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
+          throw new Error('Network connection failed. Please check your internet connection.');
+        } else if (error.message?.includes('Invalid response')) {
+          throw new Error('Weather forecast data format error. Please try refreshing the page.');
+        } else {
+          throw new Error(error.message || 'Failed to fetch weather forecast data');
+        }
+      }
 
 // Safe JSON parsing with validation
       let response;
@@ -140,13 +186,36 @@ export const weatherService = {
 
     try {
       const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url })
-      });
+try {
+        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url })
+        });
+        
+        if (!result || typeof result !== 'object') {
+          throw new Error('Invalid response format from weather service');
+        }
+        
+        if (result.error) {
+          throw new Error(result.error.message || 'Weather service error');
+        }
+      } catch (error) {
+        console.error('Hourly forecast service error:', error);
+        
+        // Categorize errors for better user experience
+        if (error.message?.includes('500')) {
+          throw new Error('Hourly forecast service is temporarily unavailable. Please try again in a moment.');
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
+          throw new Error('Network connection failed. Please check your internet connection.');
+        } else if (error.message?.includes('Invalid response')) {
+          throw new Error('Hourly forecast data format error. Please try refreshing the page.');
+        } else {
+          throw new Error(error.message || 'Failed to fetch hourly forecast data');
+        }
+      }
 
 // Safe JSON parsing with validation
       let response;
@@ -213,13 +282,36 @@ export const weatherService = {
 
     try {
       const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
-      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url })
-      });
+try {
+        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url })
+        });
+        
+        if (!result || typeof result !== 'object') {
+          throw new Error('Invalid response format from location service');
+        }
+        
+        if (result.error) {
+          throw new Error(result.error.message || 'Location service error');
+        }
+      } catch (error) {
+        console.error('Location search service error:', error);
+        
+        // Categorize errors for better user experience
+        if (error.message?.includes('500')) {
+          throw new Error('Location search service is temporarily unavailable. Please try again in a moment.');
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
+          throw new Error('Network connection failed. Please check your internet connection.');
+        } else if (error.message?.includes('Invalid response')) {
+          throw new Error('Location search data format error. Please try a different search term.');
+        } else {
+          throw new Error(error.message || 'Failed to search locations');
+        }
+      }
 
 // Safe JSON parsing with validation
       let response;
@@ -276,13 +368,36 @@ export const locationService = {
 
 try {
       const url = `?action=search&query=${encodeURIComponent(query)}`;
-      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url })
-      });
+try {
+        const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url })
+        });
+        
+        if (!result || typeof result !== 'object') {
+          throw new Error('Invalid response format from weather service');
+        }
+        
+        if (result.error) {
+          throw new Error(result.error.message || 'Weather service error');
+        }
+      } catch (error) {
+        console.error('Weekly forecast service error:', error);
+        
+        // Categorize errors for better user experience
+        if (error.message?.includes('500')) {
+          throw new Error('Weekly forecast service is temporarily unavailable. Please try again in a moment.');
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
+          throw new Error('Network connection failed. Please check your internet connection.');
+        } else if (error.message?.includes('Invalid response')) {
+          throw new Error('Weekly forecast data format error. Please try refreshing the page.');
+        } else {
+          throw new Error(error.message || 'Failed to fetch weekly forecast data');
+        }
+      }
 
       // Validate response structure
       if (!result) {

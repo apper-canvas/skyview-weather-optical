@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { toast } from 'react-toastify';
 import Input from "@/components/atoms/Input";
 import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
@@ -57,10 +58,10 @@ setIsLoading(true);
         } else if (error.message) {
           // Use the error message if it's user-friendly
           errorMessage = error.message;
-        }
+}
         
-        // You could show this error to user via toast notification
-        // toast.error(errorMessage);
+        // Show user-friendly error notification
+        toast.error(errorMessage);
         
         setResults([]);
         setShowResults(false);
