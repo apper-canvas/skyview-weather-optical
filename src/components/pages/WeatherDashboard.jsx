@@ -92,10 +92,14 @@ const handleRefresh = async () => {
     }
   };
 
-  const handleEnableLocation = () => {
+const handleEnableLocation = () => {
     setShowLocationSelector(true);
   };
 
+  const handleSearchCity = () => {
+    setShowLocationSelector(true);
+    toast.info('Choose a location to get weather data');
+  };
   if (loading) {
     return <Loading />;
   }
@@ -111,6 +115,8 @@ if (!currentLocation || !weatherData) {
         description="Search and save locations to get started with accurate weather forecasts for your daily planning."
         actionText="Choose Location"
         onAction={() => setShowLocationSelector(true)}
+        onSearchCity={handleSearchCity}
+        onRefresh={handleRefresh}
       />
     );
   }
