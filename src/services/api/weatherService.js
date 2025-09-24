@@ -1,107 +1,118 @@
-import weatherData from "@/services/mockData/weather.json";
-import locationsData from "@/services/mockData/locations.json";
-import forecastsData from "@/services/mockData/forecasts.json";
-import hourlyForecastsData from "@/services/mockData/hourlyForecasts.json";
+// Initialize ApperClient for edge function communication
+const { ApperClient } = window.ApperSDK;
+
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 // Simulate network delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Weather data store
-let weather = [...weatherData];
-let locations = [...locationsData];
-let forecasts = [...forecastsData];
-let hourlyForecasts = [...hourlyForecastsData];
+// Current location storage
+let currentUserLocation = null;
+let savedLocations = [];
 
 export const weatherService = {
-  // Get current weather for a location
-  async getCurrentWeather(locationId) {
-    await delay(300);
-    
-    if (!locationId) {
-      throw new Error("Location ID is required");
+  // Get current weather for current location
+  async getCurrentWeather() {
+    if (!currentUserLocation) {
+      throw new Error("No current location set");
     }
 
-    const currentWeather = weather.find(w => w.locationId === locationId);
-    if (!currentWeather) {
-      throw new Error("Weather data not found for this location");
-    }
-
-    // Add some randomness to make it feel more realistic
-    const variation = (Math.random() - 0.5) * 4; // ±2 degrees
-    return {
-      ...currentWeather,
-      temperature: Math.round(currentWeather.temperature + variation),
-      feelsLike: Math.round(currentWeather.feelsLike + variation),
-      timestamp: new Date().toISOString()
-    };
-  },
-
-  // Get 7-day forecast for a location
-  async getForecast(locationId, days = 7) {
-    await delay(250);
-    
-    if (!locationId) {
-      throw new Error("Location ID is required");
-    }
-
-    const locationForecasts = forecasts
-      .filter(f => f.locationId === locationId)
-      .slice(0, days)
-      .map(forecast => ({
-        ...forecast,
-        // Add some randomness to temperatures
-        highTemp: forecast.highTemp + Math.round((Math.random() - 0.5) * 4),
-        lowTemp: forecast.lowTemp + Math.round((Math.random() - 0.5) * 3)
-      }));
-
-    if (locationForecasts.length === 0) {
-      throw new Error("Forecast data not found for this location");
-    }
-
-    return locationForecasts;
-  },
-
-  // Get hourly forecast for a location
-  async getHourlyForecast(locationId, hours = 24) {
-    await delay(200);
-    
-    if (!locationId) {
-      throw new Error("Location ID is required");
-    }
-
-    const locationHourlyForecasts = hourlyForecasts
-      .filter(hf => hf.locationId === locationId)
-      .slice(0, hours)
-      .map((forecast, index) => ({
-        ...forecast,
-        // Adjust hour to be relative to current time
-        hour: new Date(Date.now() + index * 60 * 60 * 1000).toISOString(),
-        temperature: forecast.temperature + Math.round((Math.random() - 0.5) * 3)
-      }));
-
-    if (locationHourlyForecasts.length === 0) {
-      throw new Error("Hourly forecast data not found for this location");
-    }
-
-    return locationHourlyForecasts;
-  },
-
-  // Get all weather data for a location (current + forecasts)
-  async getLocationWeather(locationId) {
-    await delay(400);
-    
     try {
-      const [current, forecast, hourly] = await Promise.all([
-        this.getCurrentWeather(locationId),
-        this.getForecast(locationId),
-        this.getHourlyForecast(locationId)
-      ]);
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-      return {
-        current,
-        forecast,
-        hourly
-      };
+      const response = await result.json();
+      
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch weather data');
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch current weather: ${error.message}`);
+    }
+  },
+
+  // Get 7-day forecast for current location
+  async getForecast(days = 7) {
+    if (!currentUserLocation) {
+      throw new Error("No current location set");
+    }
+
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const response = await result.json();
+      
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch forecast data');
+      }
+
+      return response.data.forecast.slice(0, days);
+    } catch (error) {
+      throw new Error(`Failed to fetch forecast: ${error.message}`);
+    }
+  },
+
+  // Get hourly forecast for current location
+  async getHourlyForecast(hours = 24) {
+    if (!currentUserLocation) {
+      throw new Error("No current location set");
+    }
+
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const response = await result.json();
+      
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch hourly data');
+      }
+
+      return response.data.hourly.slice(0, hours);
+    } catch (error) {
+      throw new Error(`Failed to fetch hourly forecast: ${error.message}`);
+    }
+  },
+
+  // Get all weather data for current location
+  async getLocationWeather() {
+    if (!currentUserLocation) {
+      throw new Error("No current location set");
+    }
+
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const response = await result.json();
+      
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch weather data');
+      }
+
+      return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch weather data: ${error.message}`);
     }
@@ -109,96 +120,129 @@ export const weatherService = {
 };
 
 export const locationService = {
-  // Get all locations
-  async getAll() {
-    await delay(200);
-    return [...locations];
+  // Get user's current geolocation
+  async getCurrentPosition() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation is not supported by this browser"));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = {
+            id: 1,
+            name: "Current Location",
+            country: "Auto-detected",
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+            isCurrentLocation: true,
+            isSaved: true
+          };
+          currentUserLocation = location;
+          resolve(location);
+        },
+        (error) => {
+          let errorMessage = "Failed to get location";
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = "Location access denied by user";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = "Location information unavailable";
+              break;
+            case error.TIMEOUT:
+              errorMessage = "Location request timed out";
+              break;
+          }
+          reject(new Error(errorMessage));
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
+        }
+      );
+    });
   },
 
   // Search locations by name
   async search(query) {
-    await delay(300);
-    
     if (!query || query.trim().length < 2) {
       return [];
     }
 
-    const searchQuery = query.toLowerCase().trim();
-    return locations.filter(location =>
-      location.name.toLowerCase().includes(searchQuery) ||
-      location.country.toLowerCase().includes(searchQuery)
-    );
-  },
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-  // Get location by ID
-  async getById(locationId) {
-    await delay(200);
-    
-    const location = locations.find(l => l.id === locationId);
-    if (!location) {
-      throw new Error("Location not found");
+      const response = await result.json();
+      
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to search locations');
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to search locations: ${error.message}`);
     }
-    
-    return { ...location };
   },
 
-  // Get saved locations
+  // Get all saved locations
   async getSaved() {
     await delay(200);
-    return locations.filter(l => l.isSaved);
+    return [...savedLocations];
   },
 
   // Get current location
   async getCurrent() {
-    await delay(200);
-    return locations.find(l => l.isCurrentLocation) || null;
+    if (!currentUserLocation) {
+      try {
+        return await this.getCurrentPosition();
+      } catch (error) {
+        return null;
+      }
+    }
+    return { ...currentUserLocation };
   },
 
   // Save a location
-  async save(locationId) {
-    await delay(300);
+  async save(location) {
+    await delay(200);
+    const existingIndex = savedLocations.findIndex(l => l.id === location.id);
     
-    const locationIndex = locations.findIndex(l => l.id === locationId);
-    if (locationIndex === -1) {
-      throw new Error("Location not found");
+    if (existingIndex === -1) {
+      savedLocations.push({ ...location, isSaved: true });
+    } else {
+      savedLocations[existingIndex] = { ...location, isSaved: true };
     }
-
-    locations[locationIndex] = { ...locations[locationIndex], isSaved: true };
-    return { ...locations[locationIndex] };
+    
+    return { ...location, isSaved: true };
   },
 
   // Remove a saved location
   async unsave(locationId) {
-    await delay(300);
-    
-    const locationIndex = locations.findIndex(l => l.id === locationId);
-    if (locationIndex === -1) {
-      throw new Error("Location not found");
-    }
-
-    locations[locationIndex] = { ...locations[locationIndex], isSaved: false };
-    return { ...locations[locationIndex] };
+    await delay(200);
+    savedLocations = savedLocations.filter(l => l.id !== locationId);
+    return true;
   },
 
   // Set current location
-  async setCurrent(locationId) {
-    await delay(300);
-    
-    // Remove current location flag from all locations
-    locations = locations.map(l => ({ ...l, isCurrentLocation: false }));
-    
-    // Set new current location
-    const locationIndex = locations.findIndex(l => l.id === locationId);
-    if (locationIndex === -1) {
-      throw new Error("Location not found");
-    }
-
-    locations[locationIndex] = { 
-      ...locations[locationIndex], 
+  async setCurrent(location) {
+    await delay(200);
+    currentUserLocation = { 
+      ...location, 
       isCurrentLocation: true,
-      isSaved: true // Automatically save current location
+      isSaved: true 
     };
     
-    return { ...locations[locationIndex] };
+    // Also save to saved locations
+    await this.save(currentUserLocation);
+    
+    return { ...currentUserLocation };
   }
 };
