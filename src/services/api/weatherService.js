@@ -33,11 +33,15 @@ export const weatherService = {
     }
 
     try {
-const url = `?action=current&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
 let result;
       try {
 result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-          method: 'GET',
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'current',
+            lat: targetLocation.lat,
+            lon: targetLocation.lon
+          }),
           headers: {
             'Content-Type': 'application/json'
           }
@@ -93,11 +97,15 @@ result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
     }
 
     try {
-      const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
 let result;
       try {
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-method: 'GET',
+method: 'POST',
+          body: JSON.stringify({
+            action: 'forecast',
+            lat: targetLocation.lat,
+            lon: targetLocation.lon
+          }),
           headers: {
             'Content-Type': 'application/json'
           }
@@ -153,11 +161,15 @@ method: 'GET',
     }
 
     try {
-      const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
 let result;
       try {
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-          method: 'GET',
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'forecast',
+            lat: targetLocation.lat,
+            lon: targetLocation.lon
+          }),
 headers: {
             'Content-Type': 'application/json'
           }
@@ -233,11 +245,15 @@ if (!result) {
     }
 
     try {
-      const url = `?action=forecast&lat=${targetLocation.lat}&lon=${targetLocation.lon}`;
 let result;
       try {
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-          method: 'GET',
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'forecast',
+            lat: targetLocation.lat,
+            lon: targetLocation.lon
+          }),
           headers: {
 'Content-Type': 'application/json'
           }
@@ -303,11 +319,14 @@ export const locationService = {
     }
 
 try {
-      const url = `?action=search&query=${encodeURIComponent(query)}`;
 let result;
       try {
         result = await apperClient.functions.invoke(import.meta.env.VITE_WEATHER_API, {
-method: 'GET',
+method: 'POST',
+          body: JSON.stringify({
+            action: 'search',
+            query: query
+          }),
           headers: {
             'Content-Type': 'application/json'
           }
