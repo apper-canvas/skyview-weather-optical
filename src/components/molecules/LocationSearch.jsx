@@ -32,36 +32,71 @@ const LocationSearch = ({ onLocationSelect, placeholder = "Search for a city..."
       }
 
 setIsLoading(true);
+      setResults([]); // Clear previous results
+      
       try {
         const searchResults = await locationService.search(query);
-        setResults(Array.isArray(searchResults) ? searchResults : []);
-        setShowResults(true);
-      } catch (error) {
-        console.error("Search failed:", error);
         
-        // Enhanced error message extraction
+        // Validate response structure
+        if (!searchResults) {
+          throw new Error('No response received from location service');
+        }
+        
+        const results = Array.isArray(searchResults) ? searchResults : [];
+        setResults(results);
+        setShowResults(true);
+        
+        // Show info if no results found for valid query
+        if (results.length === 0 && query.trim().length >= 2) {
+          toast.info(`No locations found for "${query}". Try a different search term.`);
+        }
+        
+      } catch (error) {
+        console.error("Location search failed:", error, {
+          query,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent
+        });
+        
+        // Enhanced error message extraction with 500 error handling
         let errorMessage = "Search failed. Please try again.";
         
-        // Extract specific error messages from API responses
-        if (error.message?.includes('Server connection failed')) {
-          errorMessage = "Unable to connect to weather service. Please check your internet connection.";
-        } else if (error.message?.includes('Server response error')) {
-          errorMessage = "Weather service is temporarily unavailable. Please try again in a moment.";
-} else if (error.message?.includes('Failed to search locations')) {
+        // Handle specific error patterns from enhanced edge function
+        if (error.message?.includes('Service temporarily unavailable') || 
+            error.message?.includes('temporarily unavailable')) {
+          errorMessage = "Location search is temporarily unavailable. Please try again in a moment.";
+        } else if (error.message?.includes('Request failed with status code 500') || 
+                   error.message?.includes('status code 500')) {
+          errorMessage = "Search service is experiencing issues. Please try again shortly.";
+        } else if (error.message?.includes('Weather service authentication failed')) {
+          errorMessage = "Search service configuration error. Please contact support.";
+        } else if (error.message?.includes('Too many requests')) {
+          errorMessage = "Too many search requests. Please wait a moment before searching again.";
+        } else if (error.message?.includes('Invalid search query')) {
+          errorMessage = "Please enter a valid city or location name.";
+        } else if (error.message?.includes('Server connection failed') || 
+                   error.message?.includes('Failed to fetch')) {
+          errorMessage = "Unable to connect to search service. Please check your internet connection.";
+        } else if (error.message?.includes('Network')) {
+          errorMessage = "Network error. Check your connection and try again.";
+        } else if (error.message?.includes('JSON') || error.message?.includes('Data format')) {
+          errorMessage = "Data format error. Please try a different search term.";
+        } else if (error.message?.includes('Failed to search locations')) {
           // Extract the specific error from the message
           const match = error.message.match(/Failed to search locations[:\s]*(.+)/i);
           errorMessage = match?.[1]?.trim() || "Location search service is unavailable. Please try again.";
-        } else if (error.message?.includes('JSON')) {
-          errorMessage = "Data format error. Please try a different search term.";
-        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
-          errorMessage = "Network error. Check your connection and try again.";
-        } else if (error.message) {
-          // Use the error message if it's user-friendly
+        } else if (error.message && error.message.length > 5 && error.message.length < 100) {
+          // Use the error message if it seems user-friendly (reasonable length)
           errorMessage = error.message;
-}
+        }
         
         // Show user-friendly error notification
-        toast.error(errorMessage);
+        toast.error(errorMessage, {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true
+        });
         
         setResults([]);
         setShowResults(false);

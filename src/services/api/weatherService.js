@@ -343,14 +343,26 @@ method: 'POST',
         console.error('Weekly forecast service error:', error);
         
         // Categorize errors for better user experience
-        if (error.message?.includes('500')) {
-          throw new Error('Weekly forecast service is temporarily unavailable. Please try again in a moment.');
+if (error.message?.includes('500') || error.status === 500) {
+          // Enhanced 500 error handling with context
+          if (error.message?.includes('search locations')) {
+            throw new Error('Location search service is temporarily unavailable. Please try again in a moment.');
+          } else if (error.message?.includes('WeatherAPI')) {
+            throw new Error('Weather data service is experiencing issues. Please try again shortly.');
+          } else {
+            throw new Error('Service temporarily unavailable. Please try again in a moment.');
+          }
         } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network')) {
           throw new Error('Network connection failed. Please check your internet connection.');
-        } else if (error.message?.includes('Invalid response')) {
-          throw new Error('Weekly forecast data format error. Please try refreshing the page.');
+        } else if (error.message?.includes('Invalid response') || error.message?.includes('JSON')) {
+          throw new Error('Data format error. Please try refreshing the page.');
+        } else if (error.message?.includes('Request failed with status code')) {
+          // Extract status code and provide specific message
+          const statusMatch = error.message.match(/status code (\d+)/);
+          const status = statusMatch ? statusMatch[1] : 'unknown';
+          throw new Error(`Service error (${status}). Please try again later.`);
         } else {
-          throw new Error(error.message || 'Failed to fetch weekly forecast data');
+          throw new Error(error.message || 'Failed to fetch weather data');
         }
       }
 
