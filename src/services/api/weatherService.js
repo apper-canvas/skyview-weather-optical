@@ -28,7 +28,7 @@ export const weatherService = {
       throw new Error("Location not found");
     }
 
-    try {
+try {
       const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
         body: JSON.stringify({
           latitude: location.latitude,
@@ -42,7 +42,7 @@ export const weatherService = {
       const responseData = await result.json();
       
       if (responseData.success === false) {
-        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response status: ${result.status}. The response body is: ${JSON.stringify(responseData)}.`);
         throw new Error(responseData.error || "Failed to fetch weather data");
       }
 
@@ -67,7 +67,7 @@ export const weatherService = {
       throw new Error("Location not found");
     }
 
-    try {
+try {
       const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
         body: JSON.stringify({
           latitude: location.latitude,
@@ -81,7 +81,7 @@ export const weatherService = {
       const responseData = await result.json();
       
       if (responseData.success === false) {
-        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response status: ${result.status}. The response body is: ${JSON.stringify(responseData)}.`);
         throw new Error(responseData.error || "Failed to fetch forecast data");
       }
 
@@ -106,7 +106,7 @@ export const weatherService = {
       throw new Error("Location not found");
     }
 
-    try {
+try {
       const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
         body: JSON.stringify({
           latitude: location.latitude,
@@ -120,7 +120,7 @@ export const weatherService = {
       const responseData = await result.json();
       
       if (responseData.success === false) {
-        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response status: ${result.status}. The response body is: ${JSON.stringify(responseData)}.`);
         throw new Error(responseData.error || "Failed to fetch hourly data");
       }
 
@@ -145,7 +145,7 @@ export const weatherService = {
       throw new Error("Location not found");
     }
 
-    try {
+try {
       const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
         body: JSON.stringify({
           latitude: location.latitude,
@@ -159,7 +159,7 @@ export const weatherService = {
       const responseData = await result.json();
       
       if (responseData.success === false) {
-        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response status: ${result.status}. The response body is: ${JSON.stringify(responseData)}.`);
         throw new Error(responseData.error || "Failed to fetch weather data");
       }
 
