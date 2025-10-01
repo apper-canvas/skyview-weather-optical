@@ -15,10 +15,8 @@ const Error = ({ message = "Something went wrong", onRetry }) => {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Weather Unavailable
           </h2>
-<p className="text-gray-600 mb-8 leading-relaxed">
-            {message && typeof message === 'string' 
-              ? message 
-              : "We couldn't fetch the weather data. Please check your connection and try again."}
+          <p className="text-gray-600 mb-8 leading-relaxed">
+            {message || "We couldn't fetch the weather data. Please check your connection and try again."}
           </p>
 
           {/* Action Buttons */}
@@ -43,12 +41,9 @@ const Error = ({ message = "Something went wrong", onRetry }) => {
           </div>
 
           {/* Additional Help */}
-<div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              {message?.includes('JSON') || message?.includes('parse') 
-                ? "Server is experiencing issues. Please try again in a few minutes."
-                : "Make sure you have an internet connection and try refreshing the page."
-              }
+              Make sure you have an internet connection and location services enabled.
             </p>
           </div>
         </div>

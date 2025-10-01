@@ -5,9 +5,7 @@ const Empty = ({
   title = "No Weather Data", 
   description = "We couldn't find weather information for your location.",
   actionText = "Enable Location",
-  onAction,
-  onSearchCity,
-  onRefresh
+  onAction 
 }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -39,19 +37,13 @@ const Empty = ({
 
           {/* Alternative Actions */}
           <div className="mt-6">
-<p className="text-sm text-gray-500 mb-4">Or try these options:</p>
+            <p className="text-sm text-gray-500 mb-4">Or try these options:</p>
             <div className="grid grid-cols-2 gap-3">
-              <button 
-                onClick={onSearchCity}
-                className="bg-white/80 text-gray-700 font-medium py-3 px-4 rounded-xl border border-gray-200 hover:bg-white transition-all duration-200 flex items-center justify-center gap-2"
-              >
+              <button className="bg-white/80 text-gray-700 font-medium py-3 px-4 rounded-xl border border-gray-200 hover:bg-white transition-all duration-200 flex items-center justify-center gap-2">
                 <ApperIcon name="Search" size={16} />
                 Search City
               </button>
-              <button 
-                onClick={onRefresh}
-                className="bg-white/80 text-gray-700 font-medium py-3 px-4 rounded-xl border border-gray-200 hover:bg-white transition-all duration-200 flex items-center justify-center gap-2"
-              >
+              <button className="bg-white/80 text-gray-700 font-medium py-3 px-4 rounded-xl border border-gray-200 hover:bg-white transition-all duration-200 flex items-center justify-center gap-2">
                 <ApperIcon name="RefreshCw" size={16} />
                 Refresh
               </button>

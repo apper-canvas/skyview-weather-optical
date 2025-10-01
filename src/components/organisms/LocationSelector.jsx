@@ -7,7 +7,7 @@ import { locationService } from "@/services/api/weatherService";
 import { toast } from "react-toastify";
 
 const LocationSelector = ({ 
-currentLocation, 
+  currentLocation, 
   onLocationChange, 
   className 
 }) => {
@@ -19,28 +19,26 @@ currentLocation,
     loadSavedLocations();
   }, []);
 
-const loadSavedLocations = async () => {
+  const loadSavedLocations = async () => {
     try {
       const locations = await locationService.getSaved();
       setSavedLocations(locations);
     } catch (error) {
       console.error("Failed to load saved locations:", error);
-      toast.error("Failed to load saved locations");
     }
   };
 
-const handleLocationSelect = async (location) => {
+  const handleLocationSelect = async (location) => {
     setLoading(true);
     try {
-      // Set as current location - pass the full location object
-      await locationService.setCurrent(location);
+      // Set as current location
+      await locationService.setCurrent(location.id);
       
       // Refresh saved locations
       await loadSavedLocations();
       
-      // Notify parent component with the updated location
-      const updatedLocation = { ...location, isCurrentLocation: true, isSaved: true };
-      onLocationChange(updatedLocation);
+      // Notify parent component
+      onLocationChange(location);
       
       // Close search
       setShowSearch(false);
@@ -54,8 +52,7 @@ const handleLocationSelect = async (location) => {
     }
   };
 
-const handleRemoveLocation = async (locationId, event) => {
-    event.preventDefault();
+  const handleRemoveLocation = async (locationId, event) => {
     event.stopPropagation();
     
     try {
@@ -68,25 +65,36 @@ const handleRemoveLocation = async (locationId, event) => {
     }
   };
 
-return (
+  return (
     <div className={cn("space-y-4", className)}>
-      {/* Search First Header */}
+      {/* Current Location Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ApperIcon name="Search" size={20} className="text-primary" />
+          <ApperIcon name="Navigation" size={20} className="text-primary" />
           <h2 className="text-lg font-semibold text-gray-900">
-            Search Weather Location
+            Weather Location
           </h2>
         </div>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowSearch(!showSearch)}
+          className="text-primary"
+        >
+          <ApperIcon name={showSearch ? "X" : "Search"} size={16} />
+        </Button>
       </div>
 
-      {/* Primary Search Section - Always Visible */}
-      <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
-        <LocationSearch
-          onLocationSelect={handleLocationSelect}
-          placeholder="Search for any city worldwide..."
-        />
-      </div>
+      {/* Search Section */}
+      {showSearch && (
+        <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
+          <LocationSearch
+            onLocationSelect={handleLocationSelect}
+            placeholder="Search for a city to add..."
+          />
+        </div>
+      )}
 
       {/* Current Location Display */}
       {currentLocation && (
@@ -111,7 +119,7 @@ return (
       {savedLocations.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-gray-700 uppercase tracking-wide">
-            Recently Searched
+            Saved Locations
           </h3>
           <div className="space-y-2">
             {savedLocations.map((location) => (
@@ -121,11 +129,7 @@ return (
                   "bg-white/70 backdrop-blur-md rounded-xl p-3 border border-white/20 transition-all duration-200 cursor-pointer hover:bg-white/80 hover:shadow-md group",
                   location.isCurrentLocation && "ring-2 ring-primary/30 bg-primary/5"
                 )}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleLocationSelect(location);
-                }}
+                onClick={() => handleLocationSelect(location)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -160,7 +164,6 @@ return (
                       <button
                         onClick={(e) => handleRemoveLocation(location.id, e)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-400 hover:text-red-500 p-1"
-                        title="Remove from history"
                       >
                         <ApperIcon name="X" size={14} />
                       </button>
@@ -172,13 +175,6 @@ return (
           </div>
         </div>
       )}
-
-      {/* Help Text */}
-      <div className="text-center">
-        <p className="text-xs text-gray-500">
-          Search for any city worldwide to get accurate weather forecasts
-        </p>
-      </div>
     </div>
   );
 };
