@@ -1,16 +1,17 @@
-import weatherData from "@/services/mockData/weather.json";
 import locationsData from "@/services/mockData/locations.json";
-import forecastsData from "@/services/mockData/forecasts.json";
-import hourlyForecastsData from "@/services/mockData/hourlyForecasts.json";
+
+// Initialize ApperClient
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 // Simulate network delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Weather data store
-let weather = [...weatherData];
+// Location data store
 let locations = [...locationsData];
-let forecasts = [...forecastsData];
-let hourlyForecasts = [...hourlyForecastsData];
 
 export const weatherService = {
   // Get current weather for a location
@@ -21,19 +22,35 @@ export const weatherService = {
       throw new Error("Location ID is required");
     }
 
-    const currentWeather = weather.find(w => w.locationId === locationId);
-    if (!currentWeather) {
-      throw new Error("Weather data not found for this location");
+    // Get location coordinates
+    const location = locations.find(l => l.id === locationId);
+    if (!location) {
+      throw new Error("Location not found");
     }
 
-    // Add some randomness to make it feel more realistic
-    const variation = (Math.random() - 0.5) * 4; // ±2 degrees
-    return {
-      ...currentWeather,
-      temperature: Math.round(currentWeather.temperature + variation),
-      feelsLike: Math.round(currentWeather.feelsLike + variation),
-      timestamp: new Date().toISOString()
-    };
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
+        body: JSON.stringify({
+          latitude: location.latitude,
+          longitude: location.longitude
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const responseData = await result.json();
+      
+      if (responseData.success === false) {
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        throw new Error(responseData.error || "Failed to fetch weather data");
+      }
+
+      return responseData.data.current;
+    } catch (error) {
+      console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The error is: ${error.message}`);
+      throw new Error(`Failed to fetch current weather: ${error.message}`);
+    }
   },
 
   // Get 7-day forecast for a location
@@ -44,21 +61,35 @@ export const weatherService = {
       throw new Error("Location ID is required");
     }
 
-    const locationForecasts = forecasts
-      .filter(f => f.locationId === locationId)
-      .slice(0, days)
-      .map(forecast => ({
-        ...forecast,
-        // Add some randomness to temperatures
-        highTemp: forecast.highTemp + Math.round((Math.random() - 0.5) * 4),
-        lowTemp: forecast.lowTemp + Math.round((Math.random() - 0.5) * 3)
-      }));
-
-    if (locationForecasts.length === 0) {
-      throw new Error("Forecast data not found for this location");
+    // Get location coordinates
+    const location = locations.find(l => l.id === locationId);
+    if (!location) {
+      throw new Error("Location not found");
     }
 
-    return locationForecasts;
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
+        body: JSON.stringify({
+          latitude: location.latitude,
+          longitude: location.longitude
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const responseData = await result.json();
+      
+      if (responseData.success === false) {
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        throw new Error(responseData.error || "Failed to fetch forecast data");
+      }
+
+      return responseData.data.forecast.slice(0, days);
+    } catch (error) {
+      console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The error is: ${error.message}`);
+      throw new Error(`Failed to fetch forecast: ${error.message}`);
+    }
   },
 
   // Get hourly forecast for a location
@@ -69,40 +100,72 @@ export const weatherService = {
       throw new Error("Location ID is required");
     }
 
-    const locationHourlyForecasts = hourlyForecasts
-      .filter(hf => hf.locationId === locationId)
-      .slice(0, hours)
-      .map((forecast, index) => ({
-        ...forecast,
-        // Adjust hour to be relative to current time
-        hour: new Date(Date.now() + index * 60 * 60 * 1000).toISOString(),
-        temperature: forecast.temperature + Math.round((Math.random() - 0.5) * 3)
-      }));
-
-    if (locationHourlyForecasts.length === 0) {
-      throw new Error("Hourly forecast data not found for this location");
+    // Get location coordinates
+    const location = locations.find(l => l.id === locationId);
+    if (!location) {
+      throw new Error("Location not found");
     }
 
-    return locationHourlyForecasts;
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
+        body: JSON.stringify({
+          latitude: location.latitude,
+          longitude: location.longitude
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const responseData = await result.json();
+      
+      if (responseData.success === false) {
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        throw new Error(responseData.error || "Failed to fetch hourly data");
+      }
+
+      return responseData.data.hourly.slice(0, Math.min(hours, 12));
+    } catch (error) {
+      console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The error is: ${error.message}`);
+      throw new Error(`Failed to fetch hourly forecast: ${error.message}`);
+    }
   },
 
   // Get all weather data for a location (current + forecasts)
   async getLocationWeather(locationId) {
     await delay(400);
     
-    try {
-      const [current, forecast, hourly] = await Promise.all([
-        this.getCurrentWeather(locationId),
-        this.getForecast(locationId),
-        this.getHourlyForecast(locationId)
-      ]);
+    if (!locationId) {
+      throw new Error("Location ID is required");
+    }
 
-      return {
-        current,
-        forecast,
-        hourly
-      };
+    // Get location coordinates
+    const location = locations.find(l => l.id === locationId);
+    if (!location) {
+      throw new Error("Location not found");
+    }
+
+    try {
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER_DATA, {
+        body: JSON.stringify({
+          latitude: location.latitude,
+          longitude: location.longitude
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const responseData = await result.json();
+      
+      if (responseData.success === false) {
+        console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The response body is: ${JSON.stringify(responseData)}.`);
+        throw new Error(responseData.error || "Failed to fetch weather data");
+      }
+
+      return responseData.data;
     } catch (error) {
+      console.info(`apper_info: An error was received in this function: ${import.meta.env.VITE_GET_WEATHER_DATA}. The error is: ${error.message}`);
       throw new Error(`Failed to fetch weather data: ${error.message}`);
     }
   }
